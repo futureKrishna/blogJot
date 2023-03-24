@@ -1,9 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setIsLoggedIn } from "../components/rtk/features/protectedSlice";
-import { setUsers } from "./rtk/features/UserSlice";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { setUserDetails } from "./rtk/features/protectedSlice";
 
 function Login() {
   const [userName, setUserName] = useState("");
@@ -14,14 +12,11 @@ function Login() {
 
   const dispatch = useDispatch();
   const { users } = useSelector((state) => state.users);
-  console.log(users)
+
+  console.log(users);
 
   useEffect(() => {
-    const getUsers = async () => {
-      const resp = await axios.get(`https://gorest.co.in/public/v2/users`);
-      dispatch(setUsers(resp.data));
-    };
-    getUsers();
+    sessionStorage.clear();
   }, []);
 
   const navigate = useNavigate();
@@ -50,7 +45,10 @@ function Login() {
     });
 
     if (obj !== undefined) {
-      dispatch(setIsLoggedIn(true));
+      dispatch(setUserDetails(obj));
+      const myObjectString = JSON.stringify(obj);
+      sessionStorage.setItem("myObject", myObjectString);
+      sessionStorage.setItem("login", "true");
       navigate("/blogs");
     }
   };

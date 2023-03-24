@@ -14,5 +14,5 @@ const usersSlice = createSlice({
   },
 });
 
+export default usersSlice.reducer; //whole reducer will pass
 export const { setUsers } = usersSlice.actions; //i am exporting actions which can be used to set/dispatch values
-export default usersSlice.reducer;//whole reducer will pass

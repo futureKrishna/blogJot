@@ -21,3 +21,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+//git add .
+//git commit -m 'msg'
+//git push origin master
