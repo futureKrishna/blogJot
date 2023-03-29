@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setUserDetails } from "./rtk/fetchedDetail";
 import { useNavigate } from "react-router-dom";
-import { setUserDetails } from "./rtk/features/protectedSlice";
+import "../styles/login.css";
 
 function Login() {
   const [userName, setUserName] = useState("");
@@ -11,15 +13,12 @@ function Login() {
   const pwdInput = useRef();
 
   const dispatch = useDispatch();
-  const { users } = useSelector((state) => state.users);
-
-  console.log(users);
-
-  useEffect(() => {
-    sessionStorage.clear();
-  }, []);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    localStorage.clear();
+  }, []);
 
   const userNameHandler = (e) => {
     setUserName(e.target.value);
@@ -37,50 +36,64 @@ function Login() {
     setPassword("");
   };
 
-  const loginValidation = () => {
-    let obj = users.find((credentials) => {
-      return (
-        credentials.email === userName && credentials.id.toString() === password
-      );
-    });
+  const user = async (userId) => {
+    const resp = await axios.get(
+      `https://gorest.co.in/public/v2/users/${userId}`,
+      {
+        headers: {
+          Authorization:
+            "Bearer 22e098f70d694940d7496ba457aff7a222fb1a1b1b4098ff9f38a4496f7b7b1a",
+        },
+      }
+    );
+    const data = resp.data;
+    return data;
+  };
 
-    if (obj !== undefined) {
-      dispatch(setUserDetails(obj));
-      const myObjectString = JSON.stringify(obj);
-      sessionStorage.setItem("myObject", myObjectString);
-      sessionStorage.setItem("login", "true");
+  const loginValidation = async () => {
+    const data = await user(password);
+    dispatch(setUserDetails(data));
+    const isCorrect =
+      data?.email === userName && data?.id.toString() === password;
+    if (isCorrect) {
+      const myObjectString = JSON.stringify(data);
+      localStorage.setItem("myObject", myObjectString);
+      localStorage.setItem("login", "true");
       navigate("/blogs");
     }
   };
 
   return (
     <div className="main-div">
-      <form onSubmit={submitHandler}>
-        <label>Username</label>
-        <input
-          type="email"
-          placeholder="Enter the Username"
-          ref={usernameInput}
-          className="usernameinput"
-          onChange={userNameHandler}
-          onClick={() => usernameInput.current.focus()}
-          value={userName}
-        />
-        <label>Password</label>
-        <input
-          type="password"
-          placeholder="Enter the password"
-          ref={pwdInput}
-          className="usernameinput"
-          onChange={pwdHandler}
-          onClick={() => pwdInput.current.focus()}
-          value={password}
-        />
-        <div>
-          <button onClick={loginValidation} type="submit" className="login-btn">
-            Login
-          </button>
+      <h1 className="login-heading">Welcome to BlogJot</h1>
+      <form className="login-form" onSubmit={submitHandler}>
+        <div className="wrapper">
+          <label>Username</label>
+          <input
+            className="login-input"
+            type="email"
+            placeholder="Enter the Username"
+            ref={usernameInput}
+            onChange={userNameHandler}
+            onClick={() => usernameInput.current.focus()}
+            value={userName}
+          />
         </div>
+        <div className="wrapper">
+          <label>Password</label>
+          <input
+            className="login-input"
+            type="password"
+            placeholder="Enter the password"
+            ref={pwdInput}
+            onChange={pwdHandler}
+            onClick={() => pwdInput.current.focus()}
+            value={password}
+          />
+        </div>
+        <button onClick={loginValidation} type="submit" className="login-btn">
+          Login
+        </button>
       </form>
     </div>
   );

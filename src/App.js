@@ -5,27 +5,28 @@ import ProtectedRoute from "./components/ProtectedRoute.js";
 
 function App() {
   return (
-    <Routes>
-      <Route
-        exact
-        path="/blogs"
-        element={
-          <ProtectedRoute>
-            <Blogs />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/login" element={<Login />} />
-      <Route
-        path="*"
-        exact
-        element={
-          <ProtectedRoute>
-            <Blogs />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="login" element={<Login />} />
+        <Route
+          path="blogs"
+          element={
+            <ProtectedRoute>
+              <Blogs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="*"
+          exact
+          element={
+            <ProtectedRoute>
+              <Blogs />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </>
   );
 }
 

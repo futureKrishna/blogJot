@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  allblogs: [],
+  allBlogs: [],
+  isLoading: false,
 };
 
 const blogSlice = createSlice({
@@ -9,10 +10,13 @@ const blogSlice = createSlice({
   initialState,
   reducers: {
     setAllBlogs: (state, action) => {
-      state.allblogs = action.payload;
+      state.allBlogs = action.payload;
+    },
+    setIsLoading: (state, action) => {
+      state.isLoading = action.payload;
     },
   },
 });
 
 export default blogSlice.reducer;
-export const { setAllBlogs } = blogSlice.actions;
+export const { setAllBlogs, setIsLoading } = blogSlice.actions;
