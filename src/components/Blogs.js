@@ -180,27 +180,40 @@ function Blogs() {
                 </button>
               </div>
 
-              <div className="content-tabs">
-                <div
-                  className={
-                    toggleState === 1 ? "content  active-content" : "content"
-                  }
-                >
-                  {allBlogs
-                    ?.filter((blog) =>
-                      blog.title
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
-                    )
-                    .map((blogs, index) => (
-                      <div key={index}>
-                        <h3>{blogs.title}</h3>
-                        <div>{blogs.body}</div>
-                      </div>
-                    ))}
+              {!isLoading ? (
+                <div className="content-tabs">
+                  <div className="search-create-div">
+                    <input
+                      className="blog-search-input"
+                      placeholder="search here"
+                      type="text"
+                      value={searchTerm}
+                      onChange={handleSearch}
+                    />
+                  </div>
+                  <div
+                    className={
+                      toggleState === 1 ? "content  active-content" : "content"
+                    }
+                  >
+                    {allBlogs
+                      ?.filter((blog) =>
+                        blog.title
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                      )
+                      .map((blogs, index) => (
+                        <div className="blog-box" key={index}>
+                          <h3>{blogs.title}</h3>
+                          <div>{blogs.body}</div>
+                        </div>
+                      ))}
+                  </div>
+                  <div></div>
                 </div>
-                <div></div>
-              </div>
+              ) : (
+                <Spinner />
+              )}
             </div>
           )}
         </div>
